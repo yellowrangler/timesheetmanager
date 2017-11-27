@@ -1,0 +1,38 @@
+.timeHistoryTable {
+    border:1px solid white;
+    padding-left:10px;
+}
+
+.timeHistoryTable tr th {
+    border:3px solid blue;
+}
+
+.timeTable {
+    border:1px solid white;
+    padding-left:10px;
+}
+
+.timeTable tr th {
+    border:3px solid green;
+}
+
+.iconBtn :hover {
+    cursor: pointer;
+    text-align:right;
+}
+
+.SeelectableTR :hover {
+    cursor: pointer;
+}
+
+.inlineDiv {
+	padding:5px 45px 5px 0;
+	display:inline-block;
+	font-size:16px;
+}
+
+.customSelect {
+   background: #d7fbfd;
+   color:#000;
+   font-size:16px;
+}
