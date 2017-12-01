@@ -9,15 +9,39 @@ include ('../class/class.AccessLog.php');
 //
 $datetime = date("Y-m-d H:i:s");
 
-$clientid = $_POST["clientid"];
-$projectid = $_POST["projectid"];
-$entrydate = $_POST["entrydate"];
+
+$clientid = "";
+$weekending = "";
+
+if( isset($_POST['clientid']) )
+{
+     $clientid = $_POST["clientid"];
+}
+else
+{
+	if( isset($_GET['clientid']) )
+	{
+	     $clientid = $_GET["clientid"];
+	}
+}
+
+if( isset($_POST['weekending']) )
+{
+     $weekending = $_POST["weekending"];
+}
+else
+{
+	if( isset($_GET['weekending']) )
+	{
+	     $weekending = $_GET["weekending"];
+	}
+}
 
 // create time stamp versions for select
 $entrydateTS = "";
-if ($entrydate != "")
+if ($weekending != "")
 {
-	$entrydateTS = date("Y-m-d H:i:s", strtotime($entrydate));
+	$weekendingTS = date("Y-m-d H:i:s", strtotime($weekending));
 
 }
 
@@ -32,7 +56,7 @@ $returnArrayLog = new AccessLog("logs/");
 //------------------------------------------------------
 // open connection to host
 $DBhost = "localhost";
-$DBschema = "selfemployment";
+$DBschema = "tsm";
 $DBuser = "tarryc";
 $DBpassword = "tarryc";
 
@@ -44,7 +68,7 @@ if (!$dbConn)
 {
 	$log = new ErrorLog("logs/");
 	$dberr = mysql_error();
-	$log->writeLog("DB error: $dberr - Error mysql connect. Unable to get time entry daily project list.");
+	$log->writeLog("DB error: $dberr - Error mysql connect. Unable to get weekly timesheet list.");
 
 	$rv = "";
 	exit($rv);
@@ -54,43 +78,37 @@ if (!mysql_select_db($DBschema, $dbConn))
 {
 	$log = new ErrorLog("logs/");
 	$dberr = mysql_error();
-	$log->writeLog("DB error: $dberr - Error selecting db Unable to get time entry daily project list.");
+	$log->writeLog("DB error: $dberr - Error selecting db Unable to get weekly timesheet list.");
 
 	$rv = "";
 	exit($rv);
 }
 
 //---------------------------------------------------------------
-// get project information using information passed. 
+// get week timesheet info for client 
 //---------------------------------------------------------------
 $sql = "SELECT 
-	PDT.id as projectdailytimeid, 
-	projectid,enterdate,
-	DATE_FORMAT(starttime,'%h %i %p') AS fstarttime, 
-	DATE_FORMAT(starttime,'%m-%d-%Y') as fstartdate,	
-	PT.name as projectname,
-	DATE_FORMAT(stoptime,'%h %i %p') as fstoptime,
-	DATE_FORMAT(stoptime,'%m-%d-%Y') as fstopdate,
-	FORMAT(timeinterval,2) as finterval,
-	intervaldescription
-	FROM projectdailytimetbl PDT 
-	LEFT JOIN projecttbl PT ON PT.id = PDT.projectid
-	WHERE PDT.projectid = $projectid 
-	AND (invoiceid IS NULL OR invoiceid = '') ";
+	TS.id as timesheetid,
+	TS.hours as hours, 
+	TS.comments as comments,
+	E.name as employeename,
+	E.rate as rate,
+	E.id as employeeid,
+	COALESCE((E.rate * TS.hours),0) AS amount 
+	FROM timesheettbl TS 
+	LEFT JOIN employeetbl E ON E.id = TS.employeeid
+	WHERE TS.clientid = $clientid 
+	AND TS.weekending = '$weekendingTS'";
 
-	if ($entrydateTS != "")
-	{
-		$sql = $sql . " AND enterdate = '$entrydateTS' ";
-	}
-
-	$sql = $sql . " ORDER BY starttime ASC ";
+// echo "$sql";
+// exit();
 
 $sql_result = @mysql_query($sql, $dbConn);
 if (!$sql_result)
 {
 	$log = new ErrorLog("logs/");
 	$sqlerr = mysql_error();
-	$log->writeLog("SQL error: $sqlerr - Error doing get time entry daily project list select");
+	$log->writeLog("SQL error: $sqlerr - Error doing weekly timesheet list. select");
 	$log->writeLog("SQL: $sql");
 
 	$rv = "";

@@ -5,17 +5,17 @@
     </div>
 </div>   
 
-<form id="timeDailyEntryForm" method="post">
+<form id="weekEndingForm" method="post">
 <div style="padding-top:35px;" class="row">
     <div class="col-lg-12">
         <div class="inlineDiv">
-            <span ng-model="current.timeEntryDate" style="color:lightgrey;font-weight:600;">Week Ending:</span>&nbsp;<input value="" id="datepicker" >
+            <span ng-model="current.weekending" style="color:lightgrey;font-weight:600;">Week Ending:</span>&nbsp;<input value="" id="datepicker" >
         </div>
         
         <div class="inlineDiv">    
             <span style="color:lightgrey;font-weight:600;">Client</span>
 
-            <select id="clientpicker" class="customSelect" ng-model="clients.id" ng-change="getClientProjectList(this.clients.id)">
+            <select id="clientpicker" class="customSelect" ng-model="current.clientid" ng-change="getNewClientList(current.clientid)">
                 <option ng-repeat="client in clients" ng-selected="{{client.id == current.client}}" value="{{client.id}}">{{client.name}}</option>
             </select>
         </div>
@@ -25,22 +25,29 @@
 <div style="padding-top:35px;" class="row">
     <div class="col-lg-12">
         <div class="inlineDiv">
-            <time-display classname="" nameid="starttime"  placeholder="Employee Name - This should be dropdown"  size="35" ng-model="newDailyEntry.startTime"></time-display>
+            <span style="color:lightgrey;font-weight:600;">Employee</span>
+
+            <select id="employee" class="customSelect" ng-model="newWeekEnding.employeeid">
+                <option ng-repeat="employee in employees" value="{{employee.employeeid}}">{{employee.name}}</option>
+            </select>
         </div>
 
         <div class="inlineDiv">
-            <time-display classname="" nameid="stoptime" placeholder="Hours" ng-model="newDailyEntry.stopTime" ></time-display>
+            <span style="color:lightgrey;font-weight:600;">Hours</span>
+            <input size="5" classname="" nameid="hours" placeholder="" ng-model="newWeekEnding.hours" ></time-display>
         </div>
 
         <div class="inlineDiv">
-            <input size="45" maxlength="250" id="intervaldescription" ng-model="newDailyEntry.intervalDescription" type="text" placeholder="Comments">
+            <span style="color:lightgrey;font-weight:600;">Comments</span>
+            <input size="30" maxlength="250" id="comments" ng-model="newWeekEnding.comments" type="text" placeholder="">
         </div>
 
         <div class="inlineDiv">
-            <button id="submitDailTime" class="btn btn-xs btn-primary" type="button" data-ng-disabled="!newDailyEntry.startTime" data-ng-click="insertUpdateDailyEntry(newDailyEntry.projectdailytimeid)">{{current.timeEntryActionButton}}</button>
+            <button id="submitWeeklyTime" class="btn btn-xs btn-primary" type="button" data-ng-disabled="!newWeekEnding.hours" data-ng-click="insertWeekEndingEntry()">{{current.timeEntryActionButton}}</button>
             &nbsp;
-            <button id="submitDailTime" class="btn btn-xs btn-primary" type="button" data-ng-if="newDailyEntry.projectdailytimeid > 0" data-ng-click="clearDailyEntry()">Clear</button>
-            <input id="projectdailytimeid" ng-model="newDailyEntry.projectdailytimeid" value="{{newDailyEntry.projectdailytimeid}}" type="hidden">
+            <button id="submitWeeklyTime" class="btn btn-xs btn-primary" type="button" data-ng-if="newWeekEnding.weekending > 0" data-ng-click="clearWeekEndingEntry()">Clear</button>
+            <input id="employeeid" ng-model="newWeekEnding.employeeid" value="{{newWeekEnding.employeeid}}" type="hidden">
+            <input id="timesheetid" ng-model="newWeekEnding.timesheetid" value="{{newWeekEnding.timesheetid}}" type="hidden">
         </div>
     </div>
 </div>
@@ -50,48 +57,38 @@
     <div class="col-lg-7">
         <table style="width:90%;" class="timeTable">
             <tr style="background-color:green;color:white;">
-                <th>Employee</th>
-                <th>Hours</th>
-                <th colspan=2 style="text-align:center">Comments</th>
+                <th style="text-align:center">Employee</th>
+                <th style="text-align:center">Rate</th>
+                <th style="text-align:center">Hours</th>
+                <th style="text-align:right">Amount</th>
+                <th colspan=3 style="text-align:center">Comments</th>
                 <th>&nbsp;</th>
             </tr>
-            <tr ng-click="editTimeEntryDaily(timeDailyEntry.projectdailytimeid)" ng-model="timeDailyEntry" ng-repeat="timeDailyEntry in timeDailyEntries" class="SeelectableTR">
-                <td name="startimeEntry">{{timeDailyEntry.fstarttime}}</td>            
-                <td name="stopimeEntry">{{timeDailyEntry.fstoptime}}</td>
-                <td name="intervalEntry" style="text-align:center">{{timeDailyEntry.finterval}}</td>
-                <td name="descriptionEntry" style="padding-left:5px;">{{timeDailyEntry.intervaldescription}}</td>
-                <td>&nbsp;
-                <input name="projectdailytimeidhidden" ng-model="timeDailyEntry.projectdailytimeid" value="{{timeDailyEntry.projectdailytimeid}}" type="hidden">
-                </td>
-                <td class="iconBtn" name="deleteEntry"><span ng-click="deleteTimeEntryDaily(timeDailyEntry.projectdailytimeid)" class="glyphicon glyphicon-trash"></span>
-                </td>
-            </tr>
-            <tr><td colspan="6">&nbsp;</td>
-            <tr ng-model="timeDailyEntryTotal">
-                <td colspan="2">&nbsp;</td>
-                <td style="text-align:center" id="calulatedTotalInterval">{{timeDailyEntryTotal}}</td>
-                <td colspan=2 >&nbsp;</td>
-            </tr>
-        </table>
-    </div>
+            <tr ng-click="editWeekEndingEntry(weekEnding.employeeid)" ng-model="weekEnding" ng-repeat="weekEnding in weekEndings" class="SeelectableTR">
+                <td name="employeeEntry">{{weekEnding.employeename}}</td> 
 
-    <div class="col-lg-5">
-        <table style="width:90%;" class="timeHistoryTable">
-            <tr style="background-color:blue;color:white;">
-                <th>Week Ending</th>
-                <th>Hours</th>
-                <th style="text-align:center">Comments</th>
+                <td name="employeeRate"  style="text-align:center">{{weekEnding.rate}}</td> 
+
+                <td name="employeeHours" style="text-align:center">{{weekEnding.hours}}</td>
+
+                <td style="text-align:right" name="employeeAmount">{{weekEnding.amount}}</td> 
+
+                <td style="width:15px;">&nbsp</td>
+
+                <td name="commentsEntry" style="padding-left:5px;">{{weekEnding.comments}}</td>
+
+                <td>&nbsp;
+                <input name="employeeid" ng-model="weekEnding.employeeid" value="{{weekEnding.employeeid}}" type="hidden">
+                </td>
+
+                <td class="iconBtn" name="deleteEntry"><span ng-click="deleteWeekEndingEntry(weekEnding.weekending)" class="glyphicon glyphicon-trash"></span>
+                </td>
             </tr>
-            <tr ng-model="timeDailyEntry" ng-repeat="fullTimeDailyEntry in fullTimeDailyEntries" >
-                <td name="dateEntry">{{fullTimeDailyEntry.fstopdate}}</td>            
-                <td name="intervalEntry" style="text-align:center;">{{fullTimeDailyEntry.finterval}}</td>
-                <td name="descriptionEntry" style="padding-left:5px;">{{fullTimeDailyEntry.intervaldescription}}</td>
-            </tr>
-            <tr><td colspan="3">&nbsp;</td>
-            <tr ng-model="timeDailyEntryTotal">
-                <td >&nbsp;</td>
-                <td style="text-align:center;" id="calulatedTotalInterval">{{fullTimeDailyEntryTotal}}</td>
-                <td>&nbsp;</td>
+            <tr><td colspan="8">&nbsp;</td>
+            <tr ng-model="WeekEndingTotal">
+                <td colspan="3">&nbsp;</td>
+                <td style="text-align:right" id="weekendingtotalammount">{{weekEndingTotal}}</td>
+                <td colspan=5 >&nbsp;</td>
             </tr>
         </table>
     </div>

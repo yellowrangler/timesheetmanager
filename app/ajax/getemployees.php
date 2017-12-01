@@ -13,7 +13,7 @@ $datetime = date("Y-m-d H:i:s");
 // messaging
 //
 $returnArrayLog = new AccessLog("logs/");
-// $returnArrayLog->writeLog("Client List request started" );
+// $returnArrayLog->writeLog("employee List request started" );
 
 //------------------------------------------------------
 // get admin user info
@@ -32,7 +32,7 @@ if (!$dbConn)
 {
 	$log = new ErrorLog("logs/");
 	$dberr = mysql_error();
-	$rv = "DB error: $dberr - Error mysql connect. Unable to get client list.";
+	$rv = "DB error: $dberr - Error mysql connect. Unable to get employee list.";
 	$log->writeLog($rv);
 
 	print $rv;
@@ -44,7 +44,7 @@ if (!mysql_select_db($DBschema, $dbConn))
 {
 	$log = new ErrorLog("logs/");
 	$dberr = mysql_error();
-	$rv = "DB error: $dberr - Error selecting db Unable to get client list.";
+	$rv = "DB error: $dberr - Error selecting db Unable to get employee list.";
 	$log->writeLog($rv);
 
 	print $rv;
@@ -53,17 +53,29 @@ if (!mysql_select_db($DBschema, $dbConn))
 }
 
 //---------------------------------------------------------------
-// get patient information using information passed. limit 5 
+// get employee information  
 //---------------------------------------------------------------
 
-$sql = "SELECT * FROM clienttbl";
+$sql = "SELECT id as employeeid,
+	name,
+	address1,
+	address2,
+	city,
+	state,
+	zip,
+	phone,
+	email,
+	rate,
+	status 
+	FROM employeetbl
+	ORDER BY name";
 
 $sql_result = @mysql_query($sql, $dbConn);
 if (!$sql_result)
 {
 	$log = new ErrorLog("logs/");
 	$sqlerr = mysql_error();
-	$rv = "SQL error: $sqlerr - Error doing get client list select. SQL = $sql";
+	$rv = "SQL error: $sqlerr - Error doing get employee list select. SQL = $sql";
 	$log->writeLog($rv);
 
 	print $rv;

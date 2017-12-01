@@ -37,51 +37,12 @@ controllers.administrationController = function ($scope, $http, $location, clien
         getClientList();   
     }
 
-    //set current project
-    $scope.setCurrentProject = function (id) {
-        setCurrentProject(id);
-    }
 }
 
-controllers.timesheetentryController = function ($scope, clientServices, projectServices, dateServices, clientFactory, projectFactory, timeDailyEntryFactory) {
-    $scope.current = {};
-    $scope.newDailyEntry = {};
-    $scope.newDailyEntry.projectdailytimeid = "";
-    $scope.current.timeEntryDate = "";
-    $scope.current.timeEntryActionButton = "";    
-    $scope.clients = "";
-    $scope.current.client = "";
-    $scope.current.contactname = "NA";
-    $scope.current.contactdeskphone = "NA";
-    $scope.current.contactemail = "NA";        
-    $scope.projects = "";
-    $scope.current.project = "";   
-    $scope.timeDailyEntries = "";
-    $scope.timeDailyEntryTotal = "0.00";
-
-
+controllers.timesheetentryController = function ($scope, clientServices, dateServices, clientFactory, employeeFactory, weekEndingTimesheetFactory) {
+    
     //
-    // get project lists that are active. But start with last one used
-    //    
-    function getClientProjectList(id) 
-    {
-        $scope.current.client = id;
-        $scope.current.project = 0;
-        clientServices.addCurrentClient($scope.current.client,"Clientid");
-        var clientidStr = "clientid="+$scope.current.client;    
-        projectFactory.getClientProjects(clientidStr)
-            .success( function(JSONstr) {
-                $scope.projects = JSONstr;
-
-                getDailyEntryHistory();
-            })
-            .error( function (data) {
-                alert("Error "+data);
-            });
-    }
-
-    //
-    // get client lists that are active. But start with last one used
+    // get client list
     // 
     function getClientList() 
     {
@@ -90,61 +51,51 @@ controllers.timesheetentryController = function ($scope, clientServices, project
             .success( function(JSONstr) {
                 $scope.clients = JSONstr;
 
-                $scope.current.contactname = "NA";
-                $scope.current.contactdeskphone = "NA";
-                $scope.current.contactemail = "NA";  
+                $scope.current.name = "NA";
 
-                getDailyEntryHistory();
+                getWeekEndingList();
             })
             .error( function (data) {
                 alert("Error "+data);
             });
     }
 
-    //set current project
-    function setCurrentProject(projectid) 
+    //
+    // get employee list
+    // 
+    function getEmployeeList() 
     {
-        $scope.current.project = projectid;
-        $.each($scope.projects, function (idx, project) {
-            if (project.projectid == projectid)
-            {
-                $scope.current.contactname = project.contactname;
-                $scope.current.contactdeskphone = project.contactdeskphone;
-                $scope.current.contactemail = project.contactemail; 
+        // get client list
+        employeeFactory.getEmployees()
+            .success( function(JSONstr) {
+                $scope.employees = JSONstr;
 
-                return false;
-            }
-        });
-
-        projectServices.addCurrentProject($scope.current.project,"Projectid");
+                $scope.current.employeeid = "";
+            })
+            .error( function (data) {
+                alert("Error "+data);
+            });
     }
 
     // add new time entry
-    function insertUpdateDailyEntry(projectdailytimeid)
+    function insertWeekEndingEntry()
     {
-        var clientid = $scope.current.client;
-        var projectid = $scope.current.project;
-        var entrydate = $scope.current.timeEntryDate;
-        var starttime = $scope.newDailyEntry.startTime;
-        var stoptime = $scope.newDailyEntry.stopTime;
-        var interval = $scope.newDailyEntry.timeInterval;
-        var comment = $scope.newDailyEntry.intervalDescription;
+        var clientid = $scope.current.clientid;
+        var weekending = $scope.current.weekending;
+
+        var employeeid = $scope.newWeekEnding.employeeid;
+        var hours = $scope.newWeekEnding.hours;
+        var comments = $scope.newWeekEnding.comments;
+
+        var data = "clientid="+clientid+"&employeeid="+employeeid+"&weekending="+weekending+"&hours="+hours+"&comments="+comments;
 
         if ($scope.current.timeEntryActionButton == "Add")
         {
-            if (interval == "")
-            {
-                interval = 0; 
-            }
-
-            var data = "projectid="+projectid+"&entrydate="+entrydate+"&starttime="+starttime+"&stoptime="+stoptime+"&interval="+interval+"&comment="+comment;
-
-
-            timeDailyEntryFactory.addDailyTime(data)
+            weekEndingTimesheetFactory.addWeekEnding(data)
                 .success( function(sdata) {
-                    clearDailyEntry();
+                    clearWeekEndingEntry();
                     
-                    getDailyEntryHistory();
+                    getWeekEndingList();
                 })
                 .error( function(edata) {
                     alert("Failed ajax to add time entry");
@@ -152,14 +103,11 @@ controllers.timesheetentryController = function ($scope, clientServices, project
         } 
         else
         {
-            var data = "projectdailytimeid="+projectdailytimeid+"&projectid="+projectid+"&entrydate="+entrydate+"&starttime="+starttime+"&stoptime="+stoptime+"&interval="+interval+"&comment="+comment;
-
-
-            timeDailyEntryFactory.updateDailyTime(data)
+            weekEndingTimesheetFactory.updateWeekEnding(data)
                 .success( function(sdata) {
-                    clearDailyEntry();
+                    clearWeekEndingEntry();
                     
-                    getDailyEntryHistory();
+                    getWeekEndingList();
                 })
                 .error( function(edata) {
                     alert("Failed ajax to update time entry");
@@ -168,28 +116,26 @@ controllers.timesheetentryController = function ($scope, clientServices, project
             
     }
 
-    function clearDailyEntry ()
+    function clearWeekEndingEntry ()
     {
         $scope.current.timeEntryActionButton = "Add";
 
-        $scope.newDailyEntry.startTime = "";
-        $scope.newDailyEntry.stopTime = "";
-        $scope.newDailyEntry.timeInterval = "";
-        $scope.newDailyEntry.intervalDescription = "";
-        $scope.newDailyEntry.projectdailytimeid = "";
+        $scope.newWeekEnding.employee = "";
+        $scope.newWeekEnding.employeeid = "";        
+        $scope.newWeekEnding.hours = "";
+        $scope.newWeekEnding.comments = "";
     }
 
     // set input fields for edit of time entry line item
-    function editTimeEntryDaily(projectdailytimeid)
+    function editWeekEndingEntry(employeeid)
     {
-        $.each($scope.timeDailyEntries, function (idx, timeentries) {
-            if (timeentries.projectdailytimeid == projectdailytimeid)
+        var timesheetlist = $scope.weekEndings;
+        $.each(timesheetlist, function (key, value) {
+            if (value.employeeid == employeeid)
             {
-                $scope.newDailyEntry.startTime = simpleTimeFormat(timeentries.fstarttime);
-                $scope.newDailyEntry.stopTime = simpleTimeFormat(timeentries.fstoptime);
-                $scope.newDailyEntry.timeInterval = timeentries.finterval;
-                $scope.newDailyEntry.intervalDescription = timeentries.intervaldescription;
-                $scope.newDailyEntry.projectdailytimeid = timeentries.projectdailytimeid;
+                $scope.newWeekEnding.employeeid = value.employeeid;
+                $scope.newWeekEnding.hours = value.hours;
+                $scope.newWeekEnding.comments = value.comments;
 
                 return false;
             }
@@ -200,14 +146,14 @@ controllers.timesheetentryController = function ($scope, clientServices, project
     }
 
     // delete time entry line item
-    function deleteTimeEntryDaily(projectdailytimeid)
+    function deleteWeekEndingEntry(weekendingdate)
     {
 
-        var data = "projectdailytimeid="+projectdailytimeid;
+        var data = "weekendingdate="+weekendingdate;
 
-        timeDailyEntryFactory.deleteDailyTime(data)
+        weekEndingTimesheetFactory.deleteDailyTime(data)
             .success( function(sdata) {
-                getDailyEntryHistory();
+                getWeekEndingList();
             })
             .error( function(edata) {
                 alert("Failed ajax to delete time entry");
@@ -216,96 +162,84 @@ controllers.timesheetentryController = function ($scope, clientServices, project
         
     // get time entries for today
     // add new time entry
-    function getDailyEntryHistory()
+    function getWeekEndingList()
     {
-        var clientid = $scope.current.client;
-        var projectid = $scope.current.project;
-        var entrydate = $scope.current.timeEntryDate;
+        var clientid = $scope.current.clientid;
+        var weekending = $scope.current.weekending;
 
-        var data = "clientid="+clientid+"&projectid="+projectid+"&entrydate="+entrydate;
+        var data = "clientid="+clientid+"&weekending="+weekending;
 
-        timeDailyEntryFactory.getActiveDailyTime(data)
+        weekEndingTimesheetFactory.getWeekEndingTimesheet(data)
             .success( function(JSONstr) {
-                $scope.timeDailyEntries = JSONstr;
+                $scope.weekEndings = JSONstr;
 
-                var nbr = 0;
+                var totalAmount = 0;
                 $.each(JSONstr, function () {
-                     nbr = nbr + parseFloat(this.finterval);
+                     totalAmount = totalAmount + parseFloat(this.amount);
                 });
 
-                nbr = nbr.toFixed(2);
-                $scope.timeDailyEntryTotal = nbr.toString();
-
-                //
-                // now get full project list 
-                //
-                var data = "clientid="+clientid+"&projectid="+projectid+"&entrydate=";
-
-                timeDailyEntryFactory.getActiveDailyTime(data)
-                    .success( function(JSONstr) {
-                        $scope.fullTimeDailyEntries = JSONstr;
-
-                        var nbr = 0;
-                        $.each(JSONstr, function () {
-                             nbr = nbr + parseFloat(this.finterval);
-                        });
-
-                        nbr = nbr.toFixed(2);
-                        $scope.fullTimeDailyEntryTotal = nbr.toString();
-                    })
-                    .error( function(edata) {
-                        alert("Failed ajax to get full time entry history");
-                    });
+                totalAmount = totalAmount.toFixed(2);
+                $scope.weekEndingTotal = totalAmount.toString();
 
             })
             .error( function(edata) {
                 alert("Failed ajax to get time entry history");
             });
     }
+
+    function getNewClientList(clientid)
+    {
+        $scope.current.clientid = clientid;
+
+        clearWeekEndingEntry();
+
+        getWeekEndingList();
+    }
     
     init();
     function init() {
+        // initialize and define variables
+        $scope.current = {};
+        $scope.clients = "";
+        $scope.employees = "";    
+        $scope.newWeekEnding = {};
+        $scope.current.weekending = "";
+        $scope.current.timeEntryActionButton = "";    
+        $scope.current.client = "";       
+        $scope.weekEndings = {};
+        $scope.WeekEndingTotal = "0.00";
+
         // some initial clean up and set up
-        clearDailyEntry();
+        clearWeekEndingEntry();
 
         // date stuff
         $( "#datepicker" ).datepicker();
 
         $( "#datepicker" ).change(function() {
-            $scope.current.timeEntryDate = $("#datepicker").val();
-            if ($scope.current.timeEntryDate == "")
+            $scope.current.weekending = $("#datepicker").val();
+            if ($scope.current.weekending == "")
             {
-                $scope.current.timeEntryDate = dateServices.getCurrentDateForDisplay();
-                $("#datepicker").val($scope.current.timeEntryDate);
+                $scope.current.weekending = dateServices.getCurrentDateForDisplay();
+                $("#datepicker").val($scope.current.weekending);
+            }
+
+            if ($scope.current.clientid != "")
+            {
+                getNewClientList($scope.current.clientid)
             }
             
-            clearDailyEntry();
-
-            getDailyEntryHistory();
         });
 
-        if ($scope.current.timeEntryDate == "")
+        if ($scope.current.weekending == "")
         {
-            $scope.current.timeEntryDate = dateServices.getCurrentDateForDisplay();
-            $("#datepicker").val($scope.current.timeEntryDate);
+            $scope.current.weekending = dateServices.getCurrentDateForDisplay();
+            $("#datepicker").val($scope.current.weekending);
 
-            // getDailyEntryHistory();
-        }
-
-        // time stuff
-        $("#timeIterval").focus(function() {
-            var starttime = $scope.newDailyEntry.startTime;
-            var stoptime = $scope.newDailyEntry.stopTime;
-            if (starttime != "" && stoptime != "")
+            if ($scope.current.clientid != "")
             {
-                var tdiff = dateServices.getTimeDifference(starttime, stoptime);
-                $scope.newDailyEntry.timeInterval = tdiff;
-
-                $scope.$digest();
-
-                return false;
+                getNewClientList($scope.current.clientid)
             }
-        });
+        }
 
         // client process
         var clientObj = clientServices.getCurrentClient();
@@ -313,100 +247,61 @@ controllers.timesheetentryController = function ($scope, clientServices, project
         {
             $scope.current.client = clientObj.id;
 
-            getClientProjectList($scope.current.client);
+            getClientList($scope.current.client);
         }
 
         // get client list
         getClientList();
 
-        // project process
-        var projectObj = projectServices.getCurrentProject();
-        if (projectObj != "")
-        {
-            $scope.current.project = projectObj.id;
-            var data = "projectid="+$scope.current.project;    
-            projectFactory.getClientProject(data)
-                .success( function(JSONstr) {
-                    var project = JSONstr;
-
-                    $scope.current.contactname = project.contactname;
-                    $scope.current.contactdeskphone = project.contactdeskphone;
-                    $scope.current.contactemail = project.contactemail; 
-                })
-                .error( function (data) {
-                    alert("Error "+data);
-                });
-        }
+        // get employee list
+        getEmployeeList();
 
         //
         // redo list
         //
-        getDailyEntryHistory();
+        getWeekEndingList();
         
     };
 
-    // project list
-    $scope.getClientProjectList = function (id) {
-        getClientProjectList(id);
-
-        getDailyEntryHistory();
-    }
-
-    //set current project
-    $scope.setCurrentProject = function (id) {
-        setCurrentProject(id);
-
-        getDailyEntryHistory();
-    }
 
     // clear daily entry
-    $scope.clearDailyEntry = function () {
-        clearDailyEntry();
+    $scope.clearWeekEndingEntry = function () {
+        clearWeekEndingEntry();
     }
 
     // edit timedailyentry
-    $scope.editTimeEntryDaily = function (projectdailytimeid)
+    $scope.editWeekEndingEntry = function (weekendingdate)
     {
-        editTimeEntryDaily(projectdailytimeid);
+        editWeekEndingEntry(weekendingdate);
     }
 
     // add new time entry
-    $scope.insertUpdateDailyEntry = function (id)
+    $scope.insertWeekEndingEntry = function (id)
     {
-        insertUpdateDailyEntry(id);
+        insertWeekEndingEntry(id);
     }
 
     // delete the time entry daily
-    $scope.deleteTimeEntryDaily = function (id)
+    $scope.deleteWeekEndingEntry = function (id)
     {
-        deleteTimeEntryDaily(id);
+        deleteWeekEndingEntry(id);
+    }
+
+    $scope.getNewClientList = function (clientid)
+    {
+        getNewClientList(clientid);
     }
 }
 
-controllers.timeentryreviewController = function ($scope, $http, $location, clientServices, projectServices, dateServices, clientFactory, projectFactory, timeDailyEntryFactory) {
+controllers.timeentryreviewController = function ($scope, $http, $location, clientServices, dateServices, clientFactory, weekEndingTimesheetFactory) {
     $scope.current = {};
 
     $scope.clients = "";
-    $scope.current.client = "";
-    $scope.projects = "";
-    $scope.current.project = "";   
-    $scope.timeDailyEntriesReview = "";
-    $scope.timeDailyEntryReviewTotal = "0.00";
+    $scope.employees = "";
+    $scope.current.client = ""; 
+    $scope.WeekEndingReview = "";
+    $scope.weekEndingReviewTotal = "0.00";
 
-        
-    function getClientProjectList(id) 
-    {
-        $scope.current.client = id;
-        clientServices.addCurrentClient($scope.current.client,"Clientid");
-        var clientidStr = "clientid="+$scope.current.client;    
-        projectFactory.getClientProjects(clientidStr)
-            .success( function(JSONstr) {
-                $scope.projects = JSONstr;
-            })
-            .error( function (data) {
-                alert("Error "+data);
-            });
-    }
 
     function getClientList() 
     {
@@ -419,30 +314,20 @@ controllers.timeentryreviewController = function ($scope, $http, $location, clie
                 alert("Error "+data);
             });
     }
-
-    //set current project
-    function setCurrentProject(projectid) 
-    {
-        $scope.current.project = projectid;
-        
-        projectServices.addCurrentProject($scope.current.project,"Projectid");
-    }
-
         
     // get time entries for today
     // add new time entry
-    function getDailyEntryHistoryReview()
+    function getWeekEndingListReview()
     {
         var clientid = $scope.current.client;
-        var projectid = $scope.current.project;
         var fromdate = $("#datepickerfrom").val();
         var todate = $("#datepickerto").val();
 
-        var data = "clientid="+clientid+"&projectid="+projectid+"&fromdate="+fromdate+"&todate="+todate;
+        var data = "clientid="+clientid+"&employeeid="+employeeid+"&fromdate="+fromdate+"&todate="+todate;
 
-        timeDailyEntryFactory.getDailyTimeReview(data)
+        weekEndingTimesheetFactory.getDailyTimeReview(data)
             .success( function(JSONstr) {
-                $scope.timeDailyEntriesReview = JSONstr;
+                $scope.WeekEndingReview = JSONstr;
 
                 var nbr = 0;
                 $.each(JSONstr, function () {
@@ -450,7 +335,7 @@ controllers.timeentryreviewController = function ($scope, $http, $location, clie
                 });
 
                 nbr = nbr.toFixed(2);
-                $scope.timeDailyEntryReviewTotal = nbr.toString();
+                $scope.weekEndingReviewTotal = nbr.toString();
             })
             .error( function(edata) {
                 alert("Failed ajax to get time entry review history");
@@ -490,43 +375,27 @@ controllers.timeentryreviewController = function ($scope, $http, $location, clie
         if (clientObj != "")
         {
             $scope.current.client = clientObj.id;
-            getClientProjectList($scope.current.client);
+            getClientList($scope.current.client);
         }
 
         // get client list
         getClientList();
 
-        // project process
-        var projectObj = projectServices.getCurrentProject();
-        if (projectObj != "")
-        {
-            $scope.current.project = projectObj.id;
-        }
     };
-
-    // project list
-    $scope.getClientProjectList = function (id) {
-        getClientProjectList(id);
-    }
-
-    //set current project
-    $scope.setCurrentProject = function (id) {
-        setCurrentProject(id);
-    }
 
     // get review list
     $scope.getDailyEntryReviewList = function ()
     {
-        getDailyEntryHistoryReview();
+        getWeekEndingListReview();
     }
 }
 
-controllers.invoicesController = function ($scope, $http, $location, clientServices, projectServices, dateServices, clientFactory, projectFactory, timeDailyEntryFactory) {
+controllers.invoicesController = function ($scope, $http, $location, clientServices, dateServices, clientFactory, weekEndingTimesheetFactory) {
     $scope.clients = "";
     $scope.current = "";
     $scope.current.client = 1;
-    $scope.timeDailyEntriesReview = "";
-    $scope.timeDailyEntryReviewTotal = "0.00";
+    $scope.WeekEndingReview = "";
+    $scope.weekEndingReviewTotal = "0.00";
 
     // functions to call in controller
     function getClientList() 
@@ -544,15 +413,14 @@ controllers.invoicesController = function ($scope, $http, $location, clientServi
     function getTimeEntriesForClient(id) 
     {
         var clientid = $scope.current.client;
-        var projectid = 0;
         var fromdate = $("#datepickerfrom").val();
         var todate = $("#datepickerto").val();
 
-        var data = "clientid="+clientid+"&projectid="+projectid+"&fromdate="+fromdate+"&todate="+todate;
+        var data = "clientid="+clientid+"&employeeid="+employeeid+"&fromdate="+fromdate+"&todate="+todate;
 
-        timeDailyEntryFactory.getDailyTimeReview(data)
+        weekEndingTimesheetFactory.getDailyTimeReview(data)
             .success( function(JSONstr) {
-                $scope.timeDailyEntriesReview = JSONstr;
+                $scope.WeekEndingReview = JSONstr;
 
                 var nbr = 0;
                 $.each(JSONstr, function () {
@@ -560,7 +428,7 @@ controllers.invoicesController = function ($scope, $http, $location, clientServi
                 });
 
                 nbr = nbr.toFixed(2);
-                $scope.timeDailyEntryReviewTotal = nbr.toString();
+                $scope.weekEndingReviewTotal = nbr.toString();
             })
             .error( function(edata) {
                 alert("Failed ajax to get time entry review history");
@@ -604,7 +472,7 @@ controllers.invoicesController = function ($scope, $http, $location, clientServi
         getClientList();
     }
 
-    // client project time list for dates
+    // client time list for dates
     $scope.getTimeEntriesForClient = function (id) {
         getTimeEntriesForClient(id);
     }

@@ -33,22 +33,31 @@ tsmApp.factory('clientFactory', function($q, $http) {
 
 });
 
-tsmApp.factory('projectFactory', function($q, $http) {
+tsmApp.factory('employeeFactory', function($q, $http) {
     var factory = {};
 
-    factory.getClientProjects = function (data) {
+    factory.getEmployees = function (data) {
         return $http({ 
             method: 'POST', 
-            url: "app/ajax/getclientprojects.php",
+            url: "app/ajax/getemployees.php",
             data: data,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })
     }
 
-    factory.getClientProject = function (data) {
+    factory.getEmployeeDetails = function (data) {
         return $http({ 
             method: 'POST', 
-            url: "app/ajax/getclientproject.php",
+            url: "app/ajax/getemployeedetails.php",
+            data: data,
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        })
+    }
+
+    factory.addUpdateEmployee = function (data) {
+        return $http({ 
+            method: 'POST', 
+            url: "app/ajax/addupdateemployee.php",
             data: data,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })
@@ -58,58 +67,40 @@ tsmApp.factory('projectFactory', function($q, $http) {
 
 });
 
-tsmApp.factory('timeDailyEntryFactory', function($q, $http) {
+tsmApp.factory('weekEndingTimesheetFactory', function($q, $http) {
     var factory = {};
 
-    factory.addDailyTime = function (data) {
+    factory.addWeekEnding = function (data) {
         return $http({ 
             method: 'POST', 
-            url: "app/ajax/addtimedailyentry.php",
+            url: "app/ajax/addweekending.php",
             data: data,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })
     }
 
-    factory.updateDailyTime = function (data) {
+    factory.updateWeekEnding = function (data) {
         return $http({ 
             method: 'POST', 
-            url: "app/ajax/updatetimedailyentry.php",
+            url: "app/ajax/updateweekending.php",
             data: data,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })
     }
 
-    factory.getDailyTime = function (data) {
+    factory.getWeekEndingTimesheet = function (data) {
         return $http({ 
             method: 'POST', 
-            url: "app/ajax/gettimedailyentry.php",
+            url: "app/ajax/getweekendingtimesheet.php",
             data: data,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })
     }
 
-    factory.getActiveDailyTime = function (data) {
+    factory.deleteWeekEndingTimesheet = function (data) {
         return $http({ 
             method: 'POST', 
-            url: "app/ajax/getactivetimedailyentry.php",
-            data: data,
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        })
-    }
-
-    factory.deleteDailyTime = function (data) {
-        return $http({ 
-            method: 'POST', 
-            url: "app/ajax/deletetimedailyentry.php",
-            data: data,
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        })
-    }
-
-    factory.getDailyTimeReview = function (data) {
-        return $http({ 
-            method: 'POST', 
-            url: "app/ajax/gettimedailyentryreview.php",
+            url: "app/ajax/deletetimeWeeklyentry.php",
             data: data,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })
