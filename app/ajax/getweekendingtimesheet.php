@@ -94,7 +94,7 @@ $sql = "SELECT
 	E.name as employeename,
 	E.rate as rate,
 	E.id as employeeid,
-	COALESCE((E.rate * TS.hours),0) AS amount 
+	ROUND(COALESCE((E.rate * TS.hours),0), 2) AS amount 
 	FROM timesheettbl TS 
 	LEFT JOIN employeetbl E ON E.id = TS.employeeid
 	WHERE TS.clientid = $clientid 

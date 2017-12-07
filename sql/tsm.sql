@@ -33,7 +33,7 @@ CREATE TABLE timesheettbl (
   id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 	clientid bigint(20) unsigned NOT NULL DEFAULT '0',
   employeeid bigint(20) unsigned NOT NULL DEFAULT '0',
-  hours int DEFAULT 0,	
+  hours decimal(5,2) DEFAULT 0.0,	
 	comments varchar(255) DEFAULT NULL,
   weekending datetime DEFAULT NULL,
   enterdate datetime DEFAULT NULL,
@@ -85,5 +85,10 @@ INSERT INTO `employeetbl` VALUES
 (11,'Kerry Favazza',30.00,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
 (12,'Ellen Porter',30.00,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
 (13,'Jackie Amero',30.00,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1);
+
+SELECT * INTO OUTFILE "/tsmdata.csv"
+FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+LINES TERMINATED BY "\n"
+FROM tsm.timesheettbl;
 
 

@@ -64,8 +64,8 @@
                 <th colspan=3 style="text-align:center">Comments</th>
                 <th>&nbsp;</th>
             </tr>
-            <tr ng-click="editWeekEndingEntry(weekEnding.employeeid)" ng-model="weekEnding" ng-repeat="weekEnding in weekEndings" class="SeelectableTR">
-                <td name="employeeEntry">{{weekEnding.employeename}}</td> 
+            <tr ng-model="weekEnding" ng-repeat="weekEnding in weekEndings">
+                <td style="cursor: pointer;" ng-click="editWeekEndingEntry(weekEnding.employeeid)" name="employeeEntry">{{weekEnding.employeename}}</td> 
 
                 <td name="employeeRate"  style="text-align:center">{{weekEnding.rate}}</td> 
 
@@ -81,7 +81,7 @@
                 <input name="employeeid" ng-model="weekEnding.employeeid" value="{{weekEnding.employeeid}}" type="hidden">
                 </td>
 
-                <td class="iconBtn" name="deleteEntry"><span ng-click="deleteWeekEndingEntry(weekEnding.weekending)" class="glyphicon glyphicon-trash"></span>
+                <td class="iconBtn" name="deleteEntry"><span ng-click="deleteWeekEndingEntry(weekEnding.timesheetid)" class="glyphicon glyphicon-trash"></span>
                 </td>
             </tr>
             <tr><td colspan="8">&nbsp;</td>

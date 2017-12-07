@@ -83,15 +83,16 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
         var clientid = $scope.current.clientid;
         var weekending = $scope.current.weekending;
 
+        var timesheetid = $scope.newWeekEnding.timesheetid;
         var employeeid = $scope.newWeekEnding.employeeid;
         var hours = $scope.newWeekEnding.hours;
         var comments = $scope.newWeekEnding.comments;
 
-        var data = "clientid="+clientid+"&employeeid="+employeeid+"&weekending="+weekending+"&hours="+hours+"&comments="+comments;
-
         if ($scope.current.timeEntryActionButton == "Add")
         {
-            weekEndingTimesheetFactory.addWeekEnding(data)
+            var data = "clientid="+clientid+"&employeeid="+employeeid+"&weekending="+weekending+"&hours="+hours+"&comments="+comments;
+
+            weekEndingTimesheetFactory.addWeekEndingTimesheet(data)
                 .success( function(sdata) {
                     clearWeekEndingEntry();
                     
@@ -103,7 +104,9 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
         } 
         else
         {
-            weekEndingTimesheetFactory.updateWeekEnding(data)
+            var data = "timesheetid="+timesheetid+"&clientid="+clientid+"&employeeid="+employeeid+"&weekending="+weekending+"&hours="+hours+"&comments="+comments;
+
+            weekEndingTimesheetFactory.updateWeekEndingTimesheet(data)
                 .success( function(sdata) {
                     clearWeekEndingEntry();
                     
@@ -121,7 +124,8 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
         $scope.current.timeEntryActionButton = "Add";
 
         $scope.newWeekEnding.employee = "";
-        $scope.newWeekEnding.employeeid = "";        
+        $scope.newWeekEnding.employeeid = "";     
+        $scope.newWeekEnding.timesheetid = "";           
         $scope.newWeekEnding.hours = "";
         $scope.newWeekEnding.comments = "";
     }
@@ -136,6 +140,7 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
                 $scope.newWeekEnding.employeeid = value.employeeid;
                 $scope.newWeekEnding.hours = value.hours;
                 $scope.newWeekEnding.comments = value.comments;
+                $scope.newWeekEnding.timesheetid = value.timesheetid;
 
                 return false;
             }
@@ -146,13 +151,13 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
     }
 
     // delete time entry line item
-    function deleteWeekEndingEntry(weekendingdate)
+    function deleteWeekEndingEntry(timesheetid)
     {
-
-        var data = "weekendingdate="+weekendingdate;
-
-        weekEndingTimesheetFactory.deleteDailyTime(data)
+        var data = "timesheetid="+timesheetid;
+        weekEndingTimesheetFactory.deleteWeekEndingTimesheet(data)
             .success( function(sdata) {
+                clearWeekEndingEntry();
+                
                 getWeekEndingList();
             })
             .error( function(edata) {
@@ -237,7 +242,7 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
 
             if ($scope.current.clientid != "")
             {
-                getNewClientList($scope.current.clientid)
+                getWeekEndingList();
             }
         }
 
@@ -245,9 +250,7 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
         var clientObj = clientServices.getCurrentClient();
         if (clientObj != "")
         {
-            $scope.current.client = clientObj.id;
-
-            getClientList($scope.current.client);
+            $scope.current.clientid = clientObj.id;
         }
 
         // get client list
@@ -578,14 +581,6 @@ controllers.adminclientsController = function ($scope, $http, $location, clientS
     
 }
 
-controllers.taxesController = function ($scope, $http, $location) {
-
-    init();
-    function init() {
-      
-    };
-}
-
 controllers.reports = function ($scope, $http, $location) {
 
     init();
@@ -594,5 +589,59 @@ controllers.reports = function ($scope, $http, $location) {
     };
 }
 
+controllers.dumpdatabaseController = function ($scope, $http, $location, adminFactory) {
+    var sw = new stopWatch();
+    var gw = new stopWatch();
+    var startTime = 0;
+    var stopTime = 0;
+    var timeDiff = 0;
+
+    function buildMySqlDump()
+    {
+        var data = "";
+        var scriptData = "";
+        startTime = 0;
+        stopTime = 0;
+        timeDiff = 0;
+
+        $("#scriptMessagesDisplay").html("");
+
+        //
+        // run dump sql table
+        //
+        sw.start();
+        startTime = sw.getLocalTimeStart();
+
+        $("#scriptMessagesDisplay").append("Start of Dump SQL Tables. Time:"+startTime+"<br />");
+        var scriptData = "dumpdatabaselabel="+$scope.current.dumpdatabaselabel;
+
+        adminFactory.buildMySqlDump(scriptData)
+        .success( function(data) {
+            
+
+            sw.stop();
+            stopTime = sw.getLocalTimeStop();
+            timeDiff = sw.getSecondsDiff();
+
+            $("#scriptMessagesDisplay").append(data);
+            $("#scriptMessagesDisplay").append("<br />End of Dump SQL Tables. Time:"+stopTime+". Interval:"+ timeDiff +" seconds");
+        })
+        .error( function(edata) {
+            alert(edata);
+        });
+    }
+
+    init();
+    function init() {
+        $scope.current = {};
+        
+        $scope.current.dumpdatabaselabel = getCurrentDateTimeStr();
+      
+    };
+
+    $scope.buildMySqlDump = function () {
+        buildMySqlDump();
+    }
+}
 
 tsmApp.controller(controllers); 

@@ -9,11 +9,6 @@ tsmApp.config(function ($routeProvider) {
                 controller: 'dashboardController',
                 templateUrl: 'app/partials/dashboard.html'
             })  
-        .when('/adminclients',
-            {
-                controller: 'adminclientsController',
-                templateUrl: 'app/partials/adminclients.html'
-            })     
         .when('/timeentrydaily',
             {
                 controller: 'timesheetentryController',
@@ -33,6 +28,16 @@ tsmApp.config(function ($routeProvider) {
             {
                 controller: 'reportsController',
                 templateUrl: 'app/partials/reports.html'
+            })  
+        .when('/adminclients',
+            {
+                controller: 'adminclientsController',
+                templateUrl: 'app/partials/adminclients.html'
+            })     
+        .when('/dumpdatabase',
+            {
+                controller: 'dumpdatabaseController',
+                templateUrl: 'app/partials/dumpdatabase.html'
             })  
         .when('/other',
             {

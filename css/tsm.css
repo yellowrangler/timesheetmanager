@@ -21,7 +21,11 @@
     text-align:right;
 }
 
-.SeelectableTR :hover {
+.SelectableTR :hover {
+    cursor: pointer;
+}
+
+.SelectableItem :hover {
     cursor: pointer;
 }
 
@@ -35,4 +39,16 @@
    background: #d7fbfd;
    color:#000;
    font-size:16px;
+}
+
+.pageStandardOffset {
+  padding-left:35px;
+  padding-right:15px;
+}
+
+.ScriptscrollClass {
+  overflow: auto;
+  height: 280px;
+  padding:15px;
+  width:99%;
 }

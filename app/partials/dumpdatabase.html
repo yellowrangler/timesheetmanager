@@ -1,0 +1,40 @@
+<div class="container">
+<div class="row">
+    <div class="col-lg-12">
+        <div style="color:teal;font-weight:600;letter-spacing:3px;font-size:18px;">Dump Data Base</div>
+    </div>
+</div> 
+
+<div style="padding-top:65px;" class="pageStandardOffset row">
+	<div class="col-md-6">
+		<div class="panel panel-default">
+		<form style="padding-top:35px;" id="dumpdatabaseForm" name="dumpdatabaseForm" class="form-horizontal">
+			<div class="panel-body">
+				<div class="form-group">
+					<label class="col-md-4 control-label" for="dumpdatabaselabel">Dump File Label</label>
+					<div class="col-md-5">
+						<input type="text" ng-model="current.dumpdatabaselabel" class="form-control" id="dumpdatabaselabel" placeholder="">
+					</div>
+				</div> <!-- end of form group -->
+
+				<div style="padding-top:35px;"  class="form-group">
+					<div class="col-md-offset-4 col-md-5">
+						<button type="button" ng-click="buildMySqlDump()" id="dumpdatabaselabelbutton" class="btn btn-primary">Dump Database</button>
+					</div>
+				</div> <!-- end of form group -->
+			</div> <!-- end of panel body -->
+		</form> <!-- end of form default -->
+		</div> <!-- end of panel default -->
+	</div> <!-- end of column -->
+
+	<!-- Detail Data -->
+	<div style="padding-right:25px;"  class="col-md-6">
+		<div class="panel panel-default">
+		      <div class="panel-body">
+				<div class="pageStandardOffset">
+					<div id="scriptMessagesDisplay" name="scriptMessagesDisplay" class="ScriptscrollClass"></div>
+				</div> 	<!-- end of offset -->
+			</div> <!-- end of panel body -->
+		</div> <!-- end of panel -->
+	</div> <!-- end of column -->
+</div> <!-- end of row -->

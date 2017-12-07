@@ -70,19 +70,19 @@ tsmApp.factory('employeeFactory', function($q, $http) {
 tsmApp.factory('weekEndingTimesheetFactory', function($q, $http) {
     var factory = {};
 
-    factory.addWeekEnding = function (data) {
+    factory.addWeekEndingTimesheet = function (data) {
         return $http({ 
             method: 'POST', 
-            url: "app/ajax/addweekending.php",
+            url: "app/ajax/addweekendingtimesheet.php",
             data: data,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })
     }
 
-    factory.updateWeekEnding = function (data) {
+    factory.updateWeekEndingTimesheet = function (data) {
         return $http({ 
             method: 'POST', 
-            url: "app/ajax/updateweekending.php",
+            url: "app/ajax/updateweekendingtimesheet.php",
             data: data,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })
@@ -100,7 +100,7 @@ tsmApp.factory('weekEndingTimesheetFactory', function($q, $http) {
     factory.deleteWeekEndingTimesheet = function (data) {
         return $http({ 
             method: 'POST', 
-            url: "app/ajax/deletetimeWeeklyentry.php",
+            url: "app/ajax/deleteweekendingtimesheet.php",
             data: data,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })
@@ -109,3 +109,19 @@ tsmApp.factory('weekEndingTimesheetFactory', function($q, $http) {
     return factory;
 
 });
+
+tsmApp.factory('adminFactory', function($q, $http) {
+    var factory = {};
+
+    factory.buildMySqlDump = function (data) {
+        return $http({
+            method: 'POST',
+            url: "app/ajax/buildmysqldump.php",
+            data: data,
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        })
+    }
+
+    return factory;
+});
+

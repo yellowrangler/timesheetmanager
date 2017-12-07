@@ -13,7 +13,12 @@ $datetime = date("Y-m-d H:i:s");
 // die();
 
 // get post values
-$projectdailytimeid = $_POST["projectdailytimeid"];
+$timesheetid = $_POST["timesheetid"];
+$clientid = $_POST["clientid"];
+$employeeid = $_POST["employeeid"];
+$weekending = $_POST["weekending"];
+$hours = $_POST["hours"];
+$comments = $_POST["comments"];
 
 //
 // messaging
@@ -26,7 +31,7 @@ $returnArrayLog = new AccessLog("logs/");
 //------------------------------------------------------
 // open connection to host
 $DBhost = "localhost";
-$DBschema = "selfemployment";
+$DBschema = "tsm";
 $DBuser = "tarryc";
 $DBpassword = "tarryc";
 
@@ -38,7 +43,7 @@ if (!$dbConn)
 {
 	$log = new ErrorLog("logs/");
 	$dberr = mysql_error();
-	$log->writeLog("DB error: $dberr - Error mysql connect. Unable to delete daily time entry.");
+	$log->writeLog("DB error: $dberr - Error mysql connect. Unable to update week ending entry.");
 
 	$rv = "";
 	exit($rv);
@@ -48,19 +53,30 @@ if (!mysql_select_db($DBschema, $dbConn))
 {
 	$log = new ErrorLog("logs/");
 	$dberr = mysql_error();
-	$log->writeLog("DB error: $dberr - Error selecting db Unable to delete daily time entry.");
+	$log->writeLog("DB error: $dberr - Error selecting db Unable to update week ending entry.");
 
 	$rv = "";
 	exit($rv);
 }
 
+// create time stamp versions for insert to mysql
+$weekendingTS = date("Y-m-d H:i:s", strtotime($weekending));
+$enterdateTS = date("Y-m-d H:i:s");
+
 //---------------------------------------------------------------
-// delete daily time entered using information passed. 
+// update timesheet table 
 //---------------------------------------------------------------
-$sql = "DELETE FROM projectdailytimetbl
-WHERE id = $projectdailytimeid";
+$sql = "UPDATE timesheettbl 
+	SET clientid = $clientid,
+	employeeid = '$employeeid',
+	hours = '$hours',
+	comments = '$comments',
+	weekending = '$weekendingTS',	
+	enterdate ='$enterdateTS' 
+	WHERE id = $timesheetid";
+
 // print $sql;
-// die();
+// exit();
 
 $rv = "";
 $sql_result = @mysql_query($sql, $dbConn);
@@ -68,7 +84,7 @@ if (!$sql_result)
 {
 	$log = new ErrorLog("logs/");
 	$sqlerr = mysql_error();
-	$log->writeLog("SQL error: $sqlerr - Error doing delete to daily time");
+	$log->writeLog("SQL error: $sqlerr - Error doing update to update week ending entrye");
 	$log->writeLog("SQL: $sql");
 
 	exit($rv);

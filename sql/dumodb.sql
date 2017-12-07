@@ -1,1 +1,0 @@
-mysqldump --extended-insert=FALSE --complete-insert=TRUE -u tarryc -ptarryc selfemployment > dbsql/selfemployment-dump-01212016.sql
