@@ -179,13 +179,17 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
                 $scope.weekEndings = JSONstr;
 
                 var totalAmount = 0;
+                var totalHours = 0;
                 $.each(JSONstr, function () {
+                     totalHours = totalHours + parseFloat(this.hours);                    
                      totalAmount = totalAmount + parseFloat(this.amount);
                 });
 
-                totalAmount = totalAmount.toFixed(2);
-                $scope.weekEndingTotal = totalAmount.toString();
+                totalHours = totalHours.toFixed(2);
+                $scope.weekEndingTotalHours = totalHours.toString();
 
+                totalAmount = totalAmount.toFixed(2);
+                $scope.weekEndingTotalAmount = totalAmount.toString();
             })
             .error( function(edata) {
                 alert("Failed ajax to get time entry history");
@@ -212,7 +216,8 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
         $scope.current.timeEntryActionButton = "";    
         $scope.current.client = "";       
         $scope.weekEndings = {};
-        $scope.WeekEndingTotal = "0.00";
+        $scope.weekEndingTotalHours = "0.00";
+        $scope.weekEndingTotalAmount = "0.00";
 
         // some initial clean up and set up
         clearWeekEndingEntry();
@@ -500,7 +505,7 @@ controllers.adminclientsController = function ($scope, $http, $location, clientS
     }
 
     // functions to call in controller
-    function getClientDetails(clientid) 
+    function getClientDetail(clientid) 
     {
         $scope.current.client = clientid;
         clientServices.addCurrentClient(clientid,"Clientid");
@@ -508,7 +513,7 @@ controllers.adminclientsController = function ($scope, $http, $location, clientS
         var data = "clientid="+clientid;
 
         // get client list
-        clientFactory.getClientDetails(data)
+        clientFactory.getClientDetail(data)
             .success( function(JSONstr) {
                 $scope.clientdetails = JSONstr;
             })
@@ -536,7 +541,7 @@ controllers.adminclientsController = function ($scope, $http, $location, clientS
             .success( function(data) {
                 getClientList();
 
-                getClientDetails(data); 
+                getClientDetail(data); 
 
                 alert("Succesfully addUpdate client");
             })
@@ -554,7 +559,7 @@ controllers.adminclientsController = function ($scope, $http, $location, clientS
         {
             $scope.current.client = clientObj.id;
 
-            getClientDetails($scope.current.client);
+            getClientDetail($scope.current.client);
         }
 
         getClientList();
@@ -565,7 +570,7 @@ controllers.adminclientsController = function ($scope, $http, $location, clientS
 
     // get client details
     $scope.showClientInformation = function (id) {
-        getClientDetails(id);
+        getClientDetail(id);
     }
 
     // clear client details
@@ -576,6 +581,106 @@ controllers.adminclientsController = function ($scope, $http, $location, clientS
     // add new client 
     $scope.addNewClient = function () {
         addNewClient();
+    }
+
+    
+}
+
+adminemployeesController = function ($scope, $http, $location, employeeServices, employeeFactory, stateService, employeeStatusService) {
+    $scope.current = {};
+    $scope.current.employee = "";
+    $scope.employeedetails = "";
+
+    // functions to call in controller
+    function getEmployeeList() 
+    {
+        // get employee list
+        employeeFactory.getEmployees()
+            .success( function(JSONstr) {
+                $scope.employees = JSONstr;
+            })
+            .error( function (data) {
+                alert("Error "+data);
+            });
+    }
+
+    // functions to call in controller
+    function getEmployeeDetail(employeeid) 
+    {
+        $scope.current.employee = employeeid;
+        employeeServices.addCurrentEmployee(employeeid,"Employeeid");
+
+        var data = "employeeid="+employeeid;
+
+        // get employee list
+        employeeFactory.getEmployeeDetail(data)
+            .success( function(JSONstr) {
+                $scope.employeedetails = JSONstr;
+            })
+            .error( function (data) {
+                alert("Error "+data);
+            });
+    }
+
+    function clearEmployeeDetails()
+    {
+        $scope.employeedetails = "";
+        $scope.current.employee = "";
+        employeeServices.addCurrentEmployee($scope.current.employee,"Employeeid");
+    }
+
+    function addNewEmployee()
+    {
+        var err = validateEmployeeForm();
+        if (err)
+            return false;
+
+        var data = $("#adminEmployeeForm").serialize();
+        
+        employeeFactory.addUpdateEmployee(data)
+            .success( function(data) {
+                getEmployeeList();
+
+                getEmployeeDetail(data); 
+
+                alert("Succesfully addUpdate employee");
+            })
+            .error( function(edata) {
+                alert("Failed addUpdate employee");
+            });
+        
+    }
+
+    init();
+    function init() {
+        // employee process
+        var employeeObj = employeeServices.getCurrentEmployee();
+        if (employeeObj != "")
+        {
+            $scope.current.employee = employeeObj.id;
+
+            getEmployeeDetail($scope.current.employee);
+        }
+
+        getEmployeeList();
+
+        $scope.states = stateService.getStateList();
+        $scope.statuses = employeeStatusService.getStatusList();
+    };
+
+    // get employee details
+    $scope.showEmployeeInformation = function (id) {
+        getEmployeeDetail(id);
+    }
+
+    // clear employee details
+    $scope.clearEmployeeDetails = function () {
+        clearEmployeeDetails();
+    }
+
+    // add new employee 
+    $scope.addNewEmployee = function () {
+        addNewEmployee();
     }
 
     

@@ -19,8 +19,9 @@ $clientaddress2 = $_POST["clientaddress2"];
 $clientcity = $_POST["clientcity"];
 $clientstate = $_POST["clientstate"];
 $clientzip = $_POST["clientzip"];
+$clientphone = $_POST["clientphone"];
+$clientemail = $_POST["clientemail"];
 $clientstatus = $_POST["clientstatus"];
-$clientrate = $_POST["clientrate"];
 
 //
 // messaging
@@ -33,7 +34,7 @@ $returnArrayLog = new AccessLog("logs/");
 //------------------------------------------------------
 // open connection to host
 $DBhost = "localhost";
-$DBschema = "selfemployment";
+$DBschema = "tsm";
 $DBuser = "tarryc";
 $DBpassword = "tarryc";
 
@@ -80,20 +81,22 @@ if ($clientid == "")
 		  city, 
 		  state, 
 		  zip, 
-		  status, 
-		  rate)
+		  phone,
+		  email,
+		  status)
 		VALUES
 		( '$clientname', 
 		  '$clientaddress1', 
 		  '$clientaddress2', 
 		  '$clientcity', 
 		  '$clientstate', 
-		  '$clientzip',  
-		  '$clientstatus', 
-		  '$clientrate')";
+		  '$clientzip', 
+		  '$clientphone', 
+		  '$clientemail',  
+		  '$clientstatus')";
 
-		// print $sql;
-		// exit();
+// print $sql;
+// exit();
 
 	$sql_result = @mysql_query($sql, $dbConn);
 	if (!$sql_result)
@@ -121,12 +124,14 @@ else
 			city = '$clientcity',
 			state = '$clientstate',
 			zip = '$clientzip',
-			status = '$clientstatus', 
-			rate = '$clientrate'
+			phone = '$clientphone',
+			email = '$clientemail',						
+			status = '$clientstatus'
 			WHERE id = '$clientid'
 			";
 
-			// print $sql;
+// print $sql;
+// exit();
 
 	$sql_result = @mysql_query($sql, $dbConn);
 	if (!$sql_result)

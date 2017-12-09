@@ -39,7 +39,7 @@
 
         <div class="inlineDiv">
             <span style="color:lightgrey;font-weight:600;">Comments</span>
-            <input size="30" maxlength="250" id="comments" ng-model="newWeekEnding.comments" type="text" placeholder="">
+            <input size="45" maxlength="250" id="comments" ng-model="newWeekEnding.comments" type="text" placeholder="">
         </div>
 
         <div class="inlineDiv">
@@ -54,8 +54,8 @@
 </form>
 
 <div id="list" style="padding-top:35px;" class="row">
-    <div class="col-lg-7">
-        <table style="width:90%;" class="timeTable">
+    <div class="col-lg-11">
+        <table style="width:85%;" class="timeTable">
             <tr style="background-color:green;color:white;">
                 <th style="text-align:center">Employee</th>
                 <th style="text-align:center">Rate</th>
@@ -69,13 +69,13 @@
 
                 <td name="employeeRate"  style="text-align:center">{{weekEnding.rate}}</td> 
 
-                <td name="employeeHours" style="text-align:center">{{weekEnding.hours}}</td>
+                <td name="employeeHours" style="text-align:right">{{weekEnding.hours}}</td>
 
                 <td style="text-align:right" name="employeeAmount">{{weekEnding.amount}}</td> 
 
                 <td style="width:15px;">&nbsp</td>
 
-                <td name="commentsEntry" style="padding-left:5px;">{{weekEnding.comments}}</td>
+                <td name="commentsEntry" style="padding-left:5px;width:45%;">{{weekEnding.comments}}</td>
 
                 <td>&nbsp;
                 <input name="employeeid" ng-model="weekEnding.employeeid" value="{{weekEnding.employeeid}}" type="hidden">
@@ -86,8 +86,9 @@
             </tr>
             <tr><td colspan="8">&nbsp;</td>
             <tr ng-model="WeekEndingTotal">
-                <td colspan="3">&nbsp;</td>
-                <td style="text-align:right" id="weekendingtotalammount">{{weekEndingTotal}}</td>
+                <td colspan="2">&nbsp;</td>
+                <td style="text-align:right" id="weekendingtotalhours">{{weekEndingTotalHours}}</td>
+                <td style="text-align:right" id="weekendingtotalammount">{{weekEndingTotalAmount}}</td>
                 <td colspan=5 >&nbsp;</td>
             </tr>
         </table>

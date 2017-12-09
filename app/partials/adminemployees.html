@@ -1,0 +1,99 @@
+<div class="container-fluid">
+<div class="row">
+    <div class="col-md-12">
+        <div style="color:teal;font-weight:600;letter-spacing:3px;font-size:18px;">Administration Employees</div>
+    </div>
+</div>   <!-- end of row -->
+
+<div style="padding-top:35px;" class="row">
+    <div class="col-md-12">
+    	<span style="color:lightgrey;font-weight:600;padding-left:40px;">Employee:</span>
+        &nbsp;
+        <select id="employeepicker" class="customSelect" ng-model="employees.id" ng-change="showEmployeeInformation(this.employees.id)">
+            <option ng-repeat="employee in employees" ng-selected="{{employee.id == current.employee}}" value="{{employee.id}}">{{employee.name}}</option>
+        </select>
+        &nbsp;
+        <button style="margin-left:25px;" id="clearemployeedetails" class="btn btn-xs btn-primary" type="button" data-ng-click="clearEmployeeDetails()">New</button>
+    </div>  <!-- end of row -->
+</div>  <!-- end of row -->
+
+<div style="padding-top:35px;" class="row">
+    <div class="col-md-12">
+    <form id="adminEmployeeForm" class="form-horizontal" method="post"> 
+    	<div id="alert_msg"></div>
+	    <div class="form-group">
+		    <label style="color:lightgrey;" for="employeename" class="col-md-2 control-label">Employee Name</label>
+		    <div class="col-md-10">
+		      <input size="30" id="employeename" name="employeename" ng-model="employeedetails.name" type="text" value="" placeholder="Employee Name" required>
+		    </div>
+		</div>
+
+		<div class="form-group">
+		    <label style="color:lightgrey;" for="employeeaddress1" class="col-md-2 control-label">Address</label>
+		    <div class="col-md-10">
+		      <input size="50" id="employeeaddress1" name="employeeaddress1" ng-model="employeedetails.address1" type="text" placeholder="Address" required>
+		    </div>
+		</div>
+
+		<div class="form-group">
+		    <label style="color:lightgrey;" for="employeeaddress2" class="col-md-2 control-label">&nbsp;</label>
+		    <div class="col-md-10">
+		      <input size="50" id="employeeaddress2" name="employeeaddress2" ng-model="employeedetails.address2" type="text" placeholder="">
+		    </div>
+		</div>
+
+		<div class="form-group">
+		    <label style="color:lightgrey;" for="employeecity" class="col-md-2 control-label">City</label>
+		    <div class="col-md-10">
+		      <input size="30" id="employeecity" name="employeecity" ng-model="employeedetails.city" type="text" placeholder="City" required>
+		    </div>
+		</div>
+
+		<div class="form-group">
+		    <label style="color:lightgrey;" for="employeestate" class="col-md-2 control-label">State</label>
+		    <div class="col-md-10">
+		    	<select id="employeestate" class="customSelect" name="employeestate" ng-model="employeedetails.state" required>
+		            <option ng-repeat="state in states" ng-selected="{{state.value == employeedetails.state}}" value="{{state.value}}">{{state.name}}</option>
+		        </select>
+		    </div>
+		</div>
+
+		<div class="form-group">
+		    <label style="color:lightgrey;" for="employeezip" class="col-md-2 control-label">ZIP</label>
+		    <div class="col-md-10">
+		      <input size="10" id="employeezip" name="employeezip" ng-model="employeedetails.zip" type="text" placeholder="ZIP Code" required>
+		    </div>
+		</div>
+
+		<div class="form-group">
+		    <label style="color:lightgrey;" for="employeerate" class="col-md-2 control-label">Rate / Hour</label>
+		    <div class="col-md-10">
+				<div class="input-group">
+					<span class="input-group-addon">$</span>
+					<input size="10" id="employeerate" name="employeerate" ng-model="employeedetails.rate" type="text" placeholder="Rate / Hour" required>
+				</div>
+		    </div>
+		</div>
+
+		<div class="form-group">
+		    <label style="color:lightgrey;" for="employeestatus" class="col-md-2 control-label">Status</label>
+		    <div class="col-md-10">
+		    	<select id="employeestatus" class="customSelect" name="employeestatus" ng-model="employeedetails.status" required>
+		            <option ng-repeat="status in statuses" ng-selected="{{status.value == employeedetails.status}}" value="{{status.value}}">{{status.name}}</option>
+		        </select>
+		    </div>
+		</div>
+
+         <div style="padding-top:35px;"  class="form-group">
+		    <label style="color:lightgrey;" for="addnewemployee" class="col-md-2 control-label">&nbsp;</label>
+		    <div class="col-md-10">
+		      <button id="addnewemployee" class="btn btn-primary" type="button" data-ng-click="addNewEmployee()">Add/Update Employee</button>
+		    </div>
+		</div>
+
+	     <input id="employeeid" name="employeeid" ng-model="employeedetails.id" value="{{employeedetails.id}}" type="hidden">
+    </form>
+    </div>  <!-- end of col -->
+</div>  <!-- end of row -->
+
+</div> <!-- end of container -->

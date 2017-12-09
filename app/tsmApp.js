@@ -33,7 +33,12 @@ tsmApp.config(function ($routeProvider) {
             {
                 controller: 'adminclientsController',
                 templateUrl: 'app/partials/adminclients.html'
-            })     
+            })   
+        .when('/adminemployees',
+            {
+                controller: 'adminemployeesController',
+                templateUrl: 'app/partials/adminemployees.html'
+            })      
         .when('/dumpdatabase',
             {
                 controller: 'dumpdatabaseController',

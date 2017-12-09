@@ -11,10 +11,10 @@ tsmApp.factory('clientFactory', function($q, $http) {
         })
     }
 
-    factory.getClientDetails = function (data) {
+    factory.getClientDetail = function (data) {
         return $http({ 
             method: 'POST', 
-            url: "app/ajax/getclientdetails.php",
+            url: "app/ajax/getclientdetail.php",
             data: data,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })

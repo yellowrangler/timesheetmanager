@@ -22,9 +22,9 @@
     <form id="adminClientForm" class="form-horizontal" method="post"> 
     	<div id="alert_msg"></div>
 	    <div class="form-group">
-		    <label style="color:lightgrey;" for="clientname" class="col-md-2 control-label">Institution Name</label>
+		    <label style="color:lightgrey;" for="clientname" class="col-md-2 control-label">Client Name</label>
 		    <div class="col-md-10">
-		      <input size="30" id="clientname" name="clientname" ng-model="clientdetails.name" type="text" value="" placeholder="Institution Name" required>
+		      <input size="30" id="clientname" name="clientname" ng-model="clientdetails.name" type="text" value="" placeholder="Client Name" required>
 		    </div>
 		</div>
 
@@ -66,12 +66,16 @@
 		</div>
 
 		<div class="form-group">
-		    <label style="color:lightgrey;" for="clientrate" class="col-md-2 control-label">Rate / Hour</label>
+		    <label style="color:lightgrey;" for="clientphone" class="col-md-2 control-label">Phone</label>
 		    <div class="col-md-10">
-				<div class="input-group">
-					<span class="input-group-addon">$</span>
-					<input size="10" id="clientrate" name="clientrate" ng-model="clientdetails.rate" type="text" placeholder="Rate / Hour" required>
-				</div>
+		      <input size="20" id="clientphone" name="clientphone" ng-model="clientdetails.phone" type="text" placeholder="Phone number" required>
+		    </div>
+		</div>
+
+		<div class="form-group">
+		    <label style="color:lightgrey;" for="clientemail" class="col-md-2 control-label">Phone</label>
+		    <div class="col-md-10">
+		      <input size="35" id="clientemail" name="clientemail" ng-model="clientdetails.email" type="text" placeholder="eMail Address" required>
 		    </div>
 		</div>
 

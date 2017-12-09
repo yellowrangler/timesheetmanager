@@ -21,6 +21,45 @@ function validateClientForm()
 	err = simpleValidation($("#clientzip"),$("#alert_msg"), "Please enter required ZIP",5,9);
 	if (err) return err;
 
+	err = simplePhoneValidation($("#clientphone"),$("#alert_msg"), "Please enter required Phone number");
+	if (err) return err;
+
+
+	err = simpleValidation($("#clientemail"),$("#alert_msg"), "Please enter required eMail Address",5,30);
+	if (err) return err;
+
+
+	err = simpleValidation($("#clientstatus"),$("#alert_msg"), "Please enter required client status",1,10);
+	if (err) return err;
+
+	// err = simplePhoneValidation($("#phone"),$("#alert_msg"), "Please enter required Phone Number");
+	// if (err) return err;
+
+	// err = simpleValidation($("#email"),$("#alert_msg"), "Please enter required eMail address",2,255);
+	// if (err) return err;
+
+	return err;
+}
+
+function validateEmployeeForm()
+{
+	var err = "";
+
+	err = simpleValidation($("#clientname"),$("#alert_msg"), "Please enter required Institution Name",2,255);
+	if (err) return err;
+
+	err = simpleValidation($("#clientaddress1"),$("#alert_msg"), "Please enter required Address",2,255);
+	if (err) return err;
+	
+	err = simpleValidation($("#clientcity"),$("#alert_msg"), "Please enter required City",2,255);
+	if (err) return err;
+
+	err = simpleValidation($("#clientstate"),$("#alert_msg"), "Please enter required State",2,2);
+	if (err) return err;
+
+	err = simpleValidation($("#clientzip"),$("#alert_msg"), "Please enter required ZIP",5,9);
+	if (err) return err;
+
 	err = simpleMoneyValidation($("#clientrate"),$("#alert_msg"), "Please enter required and valid dollars",2,10);
 	if (err) return err;
 
@@ -35,6 +74,7 @@ function validateClientForm()
 
 	return err;
 }
+
 
 function simpleValidation(obj,alert,msg,lth_min,lth_max)
 {
