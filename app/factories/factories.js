@@ -45,10 +45,10 @@ tsmApp.factory('employeeFactory', function($q, $http) {
         })
     }
 
-    factory.getEmployeeDetails = function (data) {
+    factory.getEmployeeDetail = function (data) {
         return $http({ 
             method: 'POST', 
-            url: "app/ajax/getemployeedetails.php",
+            url: "app/ajax/getemployeedetail.php",
             data: data,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         })

@@ -9,8 +9,8 @@
     <div class="col-md-12">
     	<span style="color:lightgrey;font-weight:600;padding-left:40px;">Employee:</span>
         &nbsp;
-        <select id="employeepicker" class="customSelect" ng-model="employees.id" ng-change="showEmployeeInformation(this.employees.id)">
-            <option ng-repeat="employee in employees" ng-selected="{{employee.id == current.employee}}" value="{{employee.id}}">{{employee.name}}</option>
+        <select id="employeepicker" class="customSelect" ng-model="employees.employeeid" ng-change="showEmployeeInformation(this.employees.employeeid)">
+            <option ng-repeat="employee in employees" ng-selected="{{employee.employeeid == current.employee}}" value="{{employee.employeeid}}">{{employee.name}}</option>
         </select>
         &nbsp;
         <button style="margin-left:25px;" id="clearemployeedetails" class="btn btn-xs btn-primary" type="button" data-ng-click="clearEmployeeDetails()">New</button>
@@ -52,7 +52,7 @@
 		<div class="form-group">
 		    <label style="color:lightgrey;" for="employeestate" class="col-md-2 control-label">State</label>
 		    <div class="col-md-10">
-		    	<select id="employeestate" class="customSelect" name="employeestate" ng-model="employeedetails.state" required>
+		    	<select id="employeestate" class="customSelect" name="employeestate" ng-model="employeedetails.state" >
 		            <option ng-repeat="state in states" ng-selected="{{state.value == employeedetails.state}}" value="{{state.value}}">{{state.name}}</option>
 		        </select>
 		    </div>
@@ -76,6 +76,20 @@
 		</div>
 
 		<div class="form-group">
+		    <label style="color:lightgrey;" for="employeephone" class="col-md-2 control-label">Phone</label>
+		    <div class="col-md-10">
+		      <input size="20" id="employeephone" name="employeephone" ng-model="employeedetails.phone" type="text" placeholder="Phone number" required>
+		    </div>
+		</div>
+
+		<div class="form-group">
+		    <label style="color:lightgrey;" for="employeeemail" class="col-md-2 control-label">Phone</label>
+		    <div class="col-md-10">
+		      <input size="35" id="employeeemail" name="employeeemail" ng-model="employeedetails.email" type="text" placeholder="eMail Address" required>
+		    </div>
+		</div>
+
+		<div class="form-group">
 		    <label style="color:lightgrey;" for="employeestatus" class="col-md-2 control-label">Status</label>
 		    <div class="col-md-10">
 		    	<select id="employeestatus" class="customSelect" name="employeestatus" ng-model="employeedetails.status" required>
@@ -91,7 +105,7 @@
 		    </div>
 		</div>
 
-	     <input id="employeeid" name="employeeid" ng-model="employeedetails.id" value="{{employeedetails.id}}" type="hidden">
+	     <input id="employeeid" name="employeeid" ng-model="employeedetails.employeeid" value="{{employeedetails.employeeid}}" type="hidden">
     </form>
     </div>  <!-- end of col -->
 </div>  <!-- end of row -->

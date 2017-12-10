@@ -39,47 +39,6 @@ tsmApp.service('clientServices', function () {
 
 });
 
-tsmApp.service('projectServices', function () {
-    this.getCurrentProject = function () {
-        var currentProject = "";
-        var currentProjectStr = this.retreiveCurrentProject();
-        if (currentProjectStr != ""  && currentProjectStr != null)
-        {
-            currentProject = JSON.parse(currentProjectStr);
-        }
-
-        return currentProject;
-    }
-
-    this.addCurrentProject = function (id, name) {
-        var msg ="";
-
-        var currentProject = "{\"id\":\""+id;
-        currentProject = currentProject+"\",\"name\":\""+name;
-        currentProject = currentProject+"\"}";
-
-        this.saveCurrentProject(currentProject);
-
-        return msg;
-    }
-
-    this.removeCurrentProject = function () {
-        localStorage.removeItem("currentProject");
-    }
-
-    this.saveCurrentProject = function (jsonStr) {
-        localStorage.removeItem("currentProject");
-        localStorage.setItem("currentProject", jsonStr);
-    }
-
-    this.retreiveCurrentProject = function () {
-        var currentProjectStr = localStorage.getItem("currentProject");
-
-        return currentProjectStr;
-    }
-
-});
-
 tsmApp.service('dateServices', function () {
     this.createDateForDisplay = function(date)
     {
@@ -209,6 +168,19 @@ tsmApp.service('stateService', function () {
 });
 
 tsmApp.service('clientStatusService', function () {
+
+    this.getStatusList = function() {
+        return status;
+    }
+
+    var status = [
+        { value: "1", name: "Active" },  
+        { value: "0", name: "In-Active" }
+    ];
+
+});
+
+tsmApp.service('employeeStatusService', function () {
 
     this.getStatusList = function() {
         return status;

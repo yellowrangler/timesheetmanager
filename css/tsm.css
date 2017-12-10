@@ -48,7 +48,17 @@
 
 .ScriptscrollClass {
   overflow: auto;
-  height: 280px;
+  height: 185px;
   padding:15px;
   width:99%;
+}
+
+.ScriptsLeftLabelClass {
+  height: 180px;
+  padding:15px;
+  width:99%;
+}
+
+.footerClass {
+  padding-top:200px;
 }

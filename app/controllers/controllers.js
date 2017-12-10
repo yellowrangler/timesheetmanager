@@ -586,7 +586,7 @@ controllers.adminclientsController = function ($scope, $http, $location, clientS
     
 }
 
-adminemployeesController = function ($scope, $http, $location, employeeServices, employeeFactory, stateService, employeeStatusService) {
+adminemployeesController = function ($scope, $http, $location, employeeFactory, stateService, employeeStatusService) {
     $scope.current = {};
     $scope.current.employee = "";
     $scope.employeedetails = "";
@@ -608,7 +608,6 @@ adminemployeesController = function ($scope, $http, $location, employeeServices,
     function getEmployeeDetail(employeeid) 
     {
         $scope.current.employee = employeeid;
-        employeeServices.addCurrentEmployee(employeeid,"Employeeid");
 
         var data = "employeeid="+employeeid;
 
@@ -626,7 +625,6 @@ adminemployeesController = function ($scope, $http, $location, employeeServices,
     {
         $scope.employeedetails = "";
         $scope.current.employee = "";
-        employeeServices.addCurrentEmployee($scope.current.employee,"Employeeid");
     }
 
     function addNewEmployee()
@@ -654,14 +652,6 @@ adminemployeesController = function ($scope, $http, $location, employeeServices,
     init();
     function init() {
         // employee process
-        var employeeObj = employeeServices.getCurrentEmployee();
-        if (employeeObj != "")
-        {
-            $scope.current.employee = employeeObj.id;
-
-            getEmployeeDetail($scope.current.employee);
-        }
-
         getEmployeeList();
 
         $scope.states = stateService.getStateList();
