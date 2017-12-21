@@ -80,6 +80,13 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
     // add new time entry
     function insertWeekEndingEntry()
     {
+
+        if ($scope.current.timeSheetStatus == 1)
+        {
+            alert("Timesheet is closed!");
+            return;
+        }
+
         var clientid = $scope.current.clientid;
         var weekending = $scope.current.weekending;
 
@@ -122,6 +129,7 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
     function clearWeekEndingEntry ()
     {
         $scope.current.timeEntryActionButton = "Add";
+        $scope.current.timeSheetStatus = "";
 
         $scope.newWeekEnding.employee = "";
         $scope.newWeekEnding.employeeid = "";     
@@ -133,6 +141,12 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
     // set input fields for edit of time entry line item
     function editWeekEndingEntry(employeeid)
     {
+        if ($scope.current.timeSheetStatus == 1)
+        {
+            alert("Timesheet is closed!");
+            return;
+        }
+
         var timesheetlist = $scope.weekEndings;
         $.each(timesheetlist, function (key, value) {
             if (value.employeeid == employeeid)
@@ -153,6 +167,14 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
     // delete time entry line item
     function deleteWeekEndingEntry(timesheetid)
     {
+         if ($scope.current.timeSheetStatus == 1)
+         {
+            alert("Timesheet is closed!");
+            return;
+         }
+
+        return;
+
         var data = "timesheetid="+timesheetid;
         weekEndingTimesheetFactory.deleteWeekEndingTimesheet(data)
             .success( function(sdata) {
@@ -171,6 +193,7 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
     {
         var clientid = $scope.current.clientid;
         var weekending = $scope.current.weekending;
+        var hoursInaWeek = 168;
 
         var data = "clientid="+clientid+"&weekending="+weekending;
 
@@ -180,13 +203,23 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
 
                 var totalAmount = 0;
                 var totalHours = 0;
+                var totalDiff = 0;
                 $.each(JSONstr, function () {
                      totalHours = totalHours + parseFloat(this.hours);                    
                      totalAmount = totalAmount + parseFloat(this.amount);
+
+                     //
+                     // each entry in the table gets the status of the full rimesheet
+                     //
+                     $scope.current.timeSheetStatus = this.timesheetstatus;
                 });
 
                 totalHours = totalHours.toFixed(2);
                 $scope.weekEndingTotalHours = totalHours.toString();
+
+                totalDiff = hoursInaWeek - totalHours;
+                totalDiff = totalDiff.toFixed(2);
+                $scope.weekendingtotalhoursdiff = totalDiff.toString();
 
                 totalAmount = totalAmount.toFixed(2);
                 $scope.weekEndingTotalAmount = totalAmount.toString();
@@ -204,6 +237,11 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
 
         getWeekEndingList();
     }
+
+    function closeTimesheet()
+    {
+        var i =0;
+    }
     
     init();
     function init() {
@@ -214,6 +252,7 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
         $scope.newWeekEnding = {};
         $scope.current.weekending = "";
         $scope.current.timeEntryActionButton = "";    
+        $scope.current.timeSheetStatus = "";   
         $scope.current.client = "";       
         $scope.weekEndings = {};
         $scope.weekEndingTotalHours = "0.00";
@@ -298,6 +337,11 @@ controllers.timesheetentryController = function ($scope, clientServices, dateSer
     $scope.getNewClientList = function (clientid)
     {
         getNewClientList(clientid);
+    }
+
+    $scope.closeTimesheet = function () 
+    {
+        closeTimesheet();
     }
 }
 

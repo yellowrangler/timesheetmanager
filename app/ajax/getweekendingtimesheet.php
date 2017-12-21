@@ -90,6 +90,7 @@ if (!mysql_select_db($DBschema, $dbConn))
 $sql = "SELECT 
 	TS.id as timesheetid,
 	TS.hours as hours, 
+	TS.status as timesheetstatus, 
 	TS.comments as comments,
 	E.name as employeename,
 	E.rate as rate,

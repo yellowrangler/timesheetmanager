@@ -67,8 +67,8 @@ $enterdateTS = date("Y-m-d H:i:s");
 // add week ending entered using information passed. 
 //---------------------------------------------------------------
 $sql = "INSERT INTO timesheettbl 
-	(clientid, employeeid, hours, comments, weekending, enterdate) 
-	VALUES ($clientid,$employeeid, $hours, '$comments', '$weekendingTS', '$enterdateTS')";
+	(clientid, employeeid, hours, comments, weekending, status, enterdate) 
+	VALUES ($clientid,$employeeid, $hours, '$comments', '$weekendingTS', 0, '$enterdateTS')";
 
 // print $sql;
 

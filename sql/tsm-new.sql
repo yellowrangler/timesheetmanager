@@ -33,7 +33,7 @@ CREATE TABLE timesheettbl (
   id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   clientid bigint(20) unsigned NOT NULL DEFAULT '0',
   employeeid bigint(20) unsigned NOT NULL DEFAULT '0',
-  hours decimal(5,2) DEFAULT 0.0,	
+  hours decimal(5,2) DEFAULT 0.0, 
   comments varchar(255) DEFAULT NULL,
   weekending datetime DEFAULT NULL,
   status int(11) DEFAULT NULL,  
@@ -61,7 +61,8 @@ DROP TABLE employeetbl;
 CREATE TABLE employeetbl (
   id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   name varchar(255) DEFAULT NULL,
-  rate decimal(5,2) DEFAULT NULL,
+  regularrate decimal(5,2) DEFAULT NULL,
+  holidayrate decimal(5,2) DEFAULT NULL,
   address1 varchar(255) DEFAULT NULL,
   address2 varchar(255) DEFAULT NULL,
   city varchar(45) DEFAULT NULL,

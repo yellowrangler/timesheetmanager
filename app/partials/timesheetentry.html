@@ -43,10 +43,11 @@
         </div>
 
         <div class="inlineDiv">
-            <button id="submitWeeklyTime" class="btn btn-xs btn-primary" type="button" data-ng-disabled="!newWeekEnding.hours" data-ng-click="insertWeekEndingEntry()">{{current.timeEntryActionButton}}</button>
+            <button id="submitWeeklyTime" class="btn btn-xs btn-primary" type="button" data-ng-disabled="!newWeekEnding.hours && (newWeekEnding.timesheetstatus != 1)" data-ng-click="insertWeekEndingEntry()">{{current.timeEntryActionButton}}</button>
             &nbsp;
             <button id="submitWeeklyTime" class="btn btn-xs btn-primary" type="button" data-ng-if="newWeekEnding.weekending > 0" data-ng-click="clearWeekEndingEntry()">Clear</button>
             <input id="employeeid" ng-model="newWeekEnding.employeeid" value="{{newWeekEnding.employeeid}}" type="hidden">
+            <input id="timesheetstatus" ng-model="newWeekEnding.timesheetstatus" value="{{newWeekEnding.timesheetstatus}}" type="hidden">
             <input id="timesheetid" ng-model="newWeekEnding.timesheetid" value="{{newWeekEnding.timesheetid}}" type="hidden">
         </div>
     </div>
@@ -81,7 +82,7 @@
                 <input name="employeeid" ng-model="weekEnding.employeeid" value="{{weekEnding.employeeid}}" type="hidden">
                 </td>
 
-                <td class="iconBtn" name="deleteEntry"><span ng-click="deleteWeekEndingEntry(weekEnding.timesheetid)" class="glyphicon glyphicon-trash"></span>
+                <td class="iconBtn" name="deleteEntry"><span data-ng-disabled="newWeekEnding.timesheetstatus != 1" ng-click="deleteWeekEndingEntry(weekEnding.timesheetid)" class="glyphicon glyphicon-trash"></span>
                 </td>
             </tr>
             <tr><td colspan="8">&nbsp;</td>
@@ -91,7 +92,23 @@
                 <td style="text-align:right" id="weekendingtotalammount">{{weekEndingTotalAmount}}</td>
                 <td colspan=5 >&nbsp;</td>
             </tr>
+            <tr><td colspan="8">&nbsp;</td>
+            <tr>
+                <td style="text-align:right" colspan="2">Hours in Week:</td>
+                <td style="text-align:right" id="housinweek">168.00</td>
+                <td colspan=6 >&nbsp;</td>
+            </tr>
+            <tr><td colspan="8">&nbsp;</td>
+            <tr ng-model="WeekEndingTotal">
+                <td style="text-align:right" colspan="2">Over/Under</td>
+                <td style="text-align:right" id="weekendingtotalhoursdiff">{{weekendingtotalhoursdiff}}</td>
+                <td colspan=6 >&nbsp;</td>
+            </tr>
         </table>
+
+         <div style="padding-top: 25px;" class="inlineDiv">
+            <button id="closeTimesheet" class="btn btn-xs btn-primary" type="button" data-ng-click="closeTimesheet()">Close Week Ending</button>
+        </div>
     </div>
 </div>
 </div>
