@@ -25,38 +25,11 @@ $comments = $_POST["comments"];
 $returnArrayLog = new AccessLog("logs/");
 // $returnArrayLog->writeLog("Client List request started" );
 
-//------------------------------------------------------
-// get admin user info
-//------------------------------------------------------
-// open connection to host
-$DBhost = "localhost";
-$DBschema = "tsm";
-$DBuser = "tarryc";
-$DBpassword = "tarryc";
-
 //
-// connect to db
+// db connect
 //
-$dbConn = @mysql_connect($DBhost, $DBuser, $DBpassword);
-if (!$dbConn) 
-{
-	$log = new ErrorLog("logs/");
-	$dberr = mysql_error();
-	$log->writeLog("DB error: $dberr - Error mysql connect. Unable to add week ending entry.");
-
-	$rv = "";
-	exit($rv);
-}
-
-if (!mysql_select_db($DBschema, $dbConn)) 
-{
-	$log = new ErrorLog("logs/");
-	$dberr = mysql_error();
-	$log->writeLog("DB error: $dberr - Error selecting db Unable to add week ending entry.");
-
-	$rv = "";
-	exit($rv);
-}
+$modulecontent = "Unable to add week ending entry.";
+include_once ('mysqlconnect.php');
 
 // create time stamp versions for insert to mysql
 $weekendingTS = date("Y-m-d H:i:s", strtotime($weekending));
@@ -72,22 +45,16 @@ $sql = "INSERT INTO timesheettbl
 
 // print $sql;
 
-$rv = "";
-$sql_result = @mysql_query($sql, $dbConn);
-if (!$sql_result)
-{
-	$log = new ErrorLog("logs/");
-	$sqlerr = mysql_error();
-	$log->writeLog("SQL error: $sqlerr - Error doing insert to add weekending entry");
-	$log->writeLog("SQL: $sql");
-
-	exit($rv);
-}
+//
+// sql query
+//
+$function = "insert";
+include ('mysqlquery.php');
 
 //
 // close db connection
 //
-mysql_close($dbConn);
+mysqli_close($dbConn);
 	
 //
 // logging
